@@ -21,3 +21,5 @@ We coded this simply by mixing the python example from the FRC Vision software o
 * USB camera connected to raspberry pi streams to Shuffleboard/Smartdashboard
 * Vision pipeline processes images from the USB Camera. It pushes values from the vision processing to Networktables.
 * Another video that include boxes the target contour is also streamed to SmartDashoard, which allows for easier debugging
+* Set exposure via a dashboard like Shuffleboard
+* Pushes target elevation, bearing, and distance to NetworkTables
