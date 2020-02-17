@@ -15,7 +15,7 @@ import numpy
 import math
 from enum import Enum
 
-from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer
+from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer, VideoCamera
 from networktables import NetworkTablesInstance
 import ntcore
 
@@ -534,9 +534,11 @@ if __name__ == "__main__":
         print("Setting up NetworkTables client for team {}".format(team))
         ntinst.startClientTeam(team)
 
+    camera = 0
     # start cameras
     for config in cameraConfigs:
-        cameras.append(startCamera(config))
+        camera = startCamera(config)
+        cameras.append(camera)
 
     # start switched cameras
     for config in switchedCameraConfigs:
@@ -550,6 +552,8 @@ if __name__ == "__main__":
     outputStream = inst.putVideo("Rectangle", resolutionX, resolutionY)
 	
     table = ntinst.getTable('Target Info')
+    ntinst.getTable('SmartDashboard').putNumber('Exposure', 1)
+    lastExposure = 1
 	
     print("hi")
 	
@@ -557,6 +561,13 @@ if __name__ == "__main__":
     while True:
         _, img = cvSink.grabFrame(img)
         x,y,w,h,c = gp.process(img)
+        
+        exp = ntinst.getTable('SmartDashboard').getNumber('Exposure',1)
+        if(exp != lastExposure):
+            lastExposure = exp
+            #VideoCamera.setExposureManual(camera,exp)
+            camera.setExposureManual(int(exp))
+        
         if x != -1:
             cv2.rectangle(img, (x, y), (x+w, h+y), (255, 255, 255), 1)
             
